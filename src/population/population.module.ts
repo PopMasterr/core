@@ -6,6 +6,9 @@ import { PopulationRepositoryInterface } from "./repositories/population-reposit
 import { PopulationController } from "./controllers/population.controller";
 import { GetCoordinatesService } from "./services/get-coordinates.service";
 import { CoordinatesController } from "./controllers/coordinates.controller";
+import { UsersModule } from "src/users/users.module";
+import { UpdateUserMetricsUseCase } from "src/users/services/usecases/update-user-metrics.usecase";
+import { UserDiTokens } from "src/users/di/user-tokens.di";
 
 const repositoryProviders: Array<Provider> = [
     {
@@ -18,9 +21,13 @@ const serviceProviders: Array<Provider> = [
     {
         provide: PopulationDITokens.GetPopulationUseCase,
         useFactory: (
-            populationRepository: PopulationRepositoryInterface
-        ) => new GetPopulationService(populationRepository),
-        inject: [PopulationDITokens.PopulationRepositoryInterface]
+            populationRepository: PopulationRepositoryInterface,
+            updateUserMetricsService: UpdateUserMetricsUseCase
+        ) => new GetPopulationService(populationRepository, updateUserMetricsService),
+        inject: [
+            PopulationDITokens.PopulationRepositoryInterface,
+            UserDiTokens.UpdateUserMetricsService,
+        ]
     },
     {
         provide: PopulationDITokens.GetCoordinatesUseCase,
@@ -33,6 +40,7 @@ const serviceProviders: Array<Provider> = [
 
 @Module({
     controllers: [PopulationController, CoordinatesController],
-    providers: [...repositoryProviders, ...serviceProviders]
+    providers: [...repositoryProviders, ...serviceProviders],
+    imports: [UsersModule]
 })
 export class PopulationModule {}
