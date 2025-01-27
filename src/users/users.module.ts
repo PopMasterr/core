@@ -11,6 +11,8 @@ import { UserMetrics } from "./entities/user-metrics.entity";
 import { UserMetricsRepository } from "./repositories/mysql/user-metrics.repository";
 import { UserMetricsRepositoryInterface } from "./repositories/user-metrics-repository.interface";
 import { UpdateUserMetricsService } from "./services/update-user-metrics.service";
+import { SaveUserService } from "./services/save-user.service";
+import { GetUserByEmailService } from "./services/get-user-by-email.service";
 
 const repositoryProviders: Array<Provider> = [
     {
@@ -45,12 +47,22 @@ const serviceProviders: Array<Provider> = [
         provide: UserDiTokens.UpdateUserMetricsService,
         useFactory: (repository: UserMetricsRepositoryInterface) => new UpdateUserMetricsService(repository),
         inject: [UserDiTokens.UserMetricsRepositoryInterface]
+    },
+    {
+        provide: UserDiTokens.GetUserByEmailService,
+        useFactory: (repository: UserRepositoryInterface) => new GetUserByEmailService(repository),
+        inject: [UserDiTokens.UserRepositoryInterface]
+    },
+    {
+        provide: UserDiTokens.SaveUserService,
+        useFactory: (repository: UserRepositoryInterface) => new SaveUserService(repository),
+        inject: [UserDiTokens.UserRepositoryInterface]
     }
 ];
 
 @Module({
     controllers: [UsersController],
     providers: [...repositoryProviders, ...serviceProviders],
-    exports: [UserDiTokens.UpdateUserMetricsService]
+    exports: [UserDiTokens.UpdateUserMetricsService, UserDiTokens.SaveUserService, UserDiTokens.UserRepositoryInterface, UserDiTokens.GetUserByEmailService]
 })
 export class UsersModule {}

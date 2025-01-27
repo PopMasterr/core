@@ -12,4 +12,8 @@ export class UserRepository implements UserRepositoryInterface {
     findById(id: number): Promise<User> {
         return this.repository.findOneBy({ id: id });
     }
+
+    findByEmail(email: string): Promise<User> {
+        return this.repository.findOneBy({ email: email });
+    }
 }

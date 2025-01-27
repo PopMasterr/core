@@ -3,6 +3,7 @@ import { DatabaseDiTokens } from "../di/database-tokens.di";
 import { DataSource } from "typeorm";
 import { User } from "src/users/entities/user.entity";
 import { UserMetrics } from "src/users/entities/user-metrics.entity";
+import { Achievement } from "src/achievements/entities/achievement.entity";
 
 export const databaseProviders: Array<Provider>  = [
     {
@@ -15,7 +16,7 @@ export const databaseProviders: Array<Provider>  = [
                 username: process.env.MYSQL_USER,
                 password: process.env.MYSQL_PASSWORD,
                 database: process.env.MYSQL_DB_NAME,
-                entities: [User, UserMetrics],
+                entities: [User, UserMetrics, Achievement],
                 synchronize: true,
                 logging: process.env.NODE_ENV === 'development',
             });
