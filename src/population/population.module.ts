@@ -1,14 +1,12 @@
 import { Module, Provider } from "@nestjs/common";
 import { PopulationDITokens } from "./di/population-tokens.di";
 import { PopulationRepository } from "./repositories/population-service/population.repository";
-import { GetPopulationService } from "./services/get-population.service";
 import { PopulationRepositoryInterface } from "./repositories/population-repository.interface";
-import { PopulationController } from "./controllers/population.controller";
-import { GetCoordinatesService } from "./services/get-coordinates.service";
-import { CoordinatesController } from "./controllers/coordinates.controller";
 import { UsersModule } from "src/users/users.module";
 import { UpdateUserMetricsUseCase } from "src/users/services/usecases/update-user-metrics.usecase";
 import { UserDiTokens } from "src/users/di/user-tokens.di";
+import { GetGameDataService } from "./services/get-game-data.service";
+import { GetScoreService } from "./services/get-score.service";
 
 const repositoryProviders: Array<Provider> = [
     {
@@ -19,28 +17,28 @@ const repositoryProviders: Array<Provider> = [
 
 const serviceProviders: Array<Provider> = [
     {
-        provide: PopulationDITokens.GetPopulationUseCase,
+        provide: PopulationDITokens.GetScoreService,
         useFactory: (
             populationRepository: PopulationRepositoryInterface,
             updateUserMetricsService: UpdateUserMetricsUseCase
-        ) => new GetPopulationService(populationRepository, updateUserMetricsService),
+        ) => new GetScoreService(populationRepository, updateUserMetricsService),
         inject: [
             PopulationDITokens.PopulationRepositoryInterface,
             UserDiTokens.UpdateUserMetricsService,
         ]
     },
     {
-        provide: PopulationDITokens.GetCoordinatesUseCase,
+        provide: PopulationDITokens.GetGameDataService,
         useFactory: (
             populationRepository: PopulationRepositoryInterface
-        ) => new GetCoordinatesService(populationRepository),
-        inject: [PopulationDITokens.PopulationRepositoryInterface]
+        ) => new GetGameDataService(populationRepository),
+        inject: [ PopulationDITokens.PopulationRepositoryInterface ]
     }
 ]
 
 @Module({
-    controllers: [PopulationController, CoordinatesController],
     providers: [...repositoryProviders, ...serviceProviders],
-    imports: [UsersModule]
+    imports: [UsersModule],
+    exports: [PopulationDITokens.GetScoreService, PopulationDITokens.GetGameDataService]
 })
 export class PopulationModule {}

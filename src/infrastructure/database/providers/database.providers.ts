@@ -4,6 +4,10 @@ import { DataSource } from "typeorm";
 import { User } from "src/users/entities/user.entity";
 import { UserMetrics } from "src/users/entities/user-metrics.entity";
 import { Achievement } from "src/achievements/entities/achievement.entity";
+import { Game } from "src/games/entities/game.entity";
+import { ClassicGame } from "src/games/entities/classic-game.entity";
+import { StreakGame } from "src/games/entities/streak-games.entity";
+import { ClassicGamesGame } from "src/games/entities/classic-games-game.entity";
 
 export const databaseProviders: Array<Provider>  = [
     {
@@ -16,7 +20,7 @@ export const databaseProviders: Array<Provider>  = [
                 username: process.env.MYSQL_USER,
                 password: process.env.MYSQL_PASSWORD,
                 database: process.env.MYSQL_DB_NAME,
-                entities: [User, UserMetrics, Achievement],
+                entities: [User, UserMetrics, Achievement, Game, ClassicGame, StreakGame, ClassicGamesGame],
                 synchronize: true,
                 logging: process.env.NODE_ENV === 'development',
             });

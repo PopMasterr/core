@@ -4,7 +4,7 @@ import { JwtService } from "@nestjs/jwt"
 import { AccessToken } from "src/authentication/types/access-token.types";
 import { AccessTokenPayload } from "src/authentication/types/access-token-payload.types";
 import * as bcrypt from "bcrypt";
-import { BadRequestException, Dependencies, Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
  
 @Injectable()
 export class AuthRepository implements AuthRepositoryInterface {
@@ -20,7 +20,7 @@ export class AuthRepository implements AuthRepositoryInterface {
     async login(user: AccessTokenPayload): Promise<AccessToken> {
         const payload = { username: user.username, email: user.email, userId: user.userId };
 
-        return {accessToken: this.jwtService.sign(payload, { secret: "" + process.env.JWT_SECRET })};
+        return { accessToken: this.jwtService.sign(payload, { secret: process.env.JWT_SECRET }) };
     }
 
     async register(user: User): Promise<User> {

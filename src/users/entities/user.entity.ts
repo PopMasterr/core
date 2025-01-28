@@ -5,13 +5,13 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @Column()
+    @Column({ name: 'username' })
     username: string;
 
-    @Column()
+    @Column({ name: 'email' })
     email: string;
     
-    @Column()
+    @Column({ name: 'password' })
     password: string;
 
     @CreateDateColumn({ name: 'created_at' })

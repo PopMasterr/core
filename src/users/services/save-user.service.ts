@@ -4,7 +4,9 @@ import { UserRepositoryInterface } from "../repositories/user-repository.interfa
 import { SaveUserPort, SaveUserUseCase } from "./usecases/save-user.usecase";
 
 export class SaveUserService implements SaveUserUseCase {
-    constructor(private readonly userRepository: UserRepositoryInterface) {}
+    constructor(
+        private readonly userRepository: UserRepositoryInterface,
+    ) {}
 
     async execute(payload: SaveUserPort): Promise<User> {
         const { username, email, password } = payload;
@@ -14,7 +16,7 @@ export class SaveUserService implements SaveUserUseCase {
         user.email = email;
         user.password = password;
 
-        const savedUser = this.userRepository.saveEntity(user);
+        const savedUser = await this.userRepository.saveEntity(user);
 
         if (savedUser === null) throw new BadRequestException();
         return savedUser;

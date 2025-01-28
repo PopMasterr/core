@@ -1,15 +1,16 @@
-import { Coordinates, PopulationResponse, CoordinatesResponse } from "src/population/types/population.types";
+import { GameDataResponse, PopulationResponse } from "src/population/types/population.types";
 import { PopulationRepositoryInterface } from "../population-repository.interface";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
+
 export class PopulationRepository implements PopulationRepositoryInterface {
     private client: AxiosInstance = axios.create({ baseURL: process.env.POPULATION_BASE_URL });
-
-    async getPopulation(coordinates1: Coordinates, coordinates2: Coordinates, populationGuess: number): Promise<PopulationResponse> {
+    
+    async getScore(populationGuess: number, population: number): Promise<PopulationResponse> {
         try {
             const response: AxiosResponse = await this.client.get(
-                '/getPopulation',
-                { params: { x1: coordinates1.x, y1: coordinates1.y, x2: coordinates2.x, y2: coordinates2.y, guess: populationGuess} }
+                '/getScore',
+                { params: {guess: populationGuess, population: population} }
             );
             return response.data;
         } catch(e) {
@@ -17,12 +18,13 @@ export class PopulationRepository implements PopulationRepositoryInterface {
         }
     }
 
-    async getCoordinates(): Promise<CoordinatesResponse> {
+    async getGameData(): Promise<GameDataResponse> {
         try {
-            const response: AxiosResponse = await this.client.get('/getCoordinates');
+            const response: AxiosResponse = await this.client.get( '/getData' );
             return response.data;
-        } catch(e) {
+        } catch (e) {
             return null;
         }
     }
 }
+

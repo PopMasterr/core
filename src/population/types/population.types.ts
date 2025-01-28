@@ -8,9 +8,10 @@ export type PopulationResponse = {
     score: number;
 }
 
-export type CoordinatesResponse = {
-    coordinates1: Coordinates;
-    coordinates2: Coordinates;
-    pixelCoordinates1: Coordinates;
-    pixelCoordinates2: Coordinates;
+export type GameDataResponse = {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    population: number;
 }
