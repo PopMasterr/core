@@ -9,4 +9,5 @@ export class UserDiTokens {
     public static readonly UpdateUserMetricsService: string = 'UpdateUserMetricsService';
     public static readonly GetUserByEmailService: string = 'GetUserByEmailService';
     public static readonly SaveUserService: string = 'SaveUserService';
+    public static readonly UpdateUserMetricsHighestStreakService = 'UpdateUserMetricsHighestStreakService';
 }

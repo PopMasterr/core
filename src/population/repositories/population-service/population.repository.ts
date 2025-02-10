@@ -12,6 +12,7 @@ export class PopulationRepository implements PopulationRepositoryInterface {
                 '/getScore',
                 { params: {guess: populationGuess, population: population} }
             );
+
             return response.data;
         } catch(e) {
             return null;

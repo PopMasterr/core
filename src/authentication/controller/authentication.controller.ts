@@ -34,8 +34,6 @@ export class AuthenticationController {
         const user: User = req.user;
         const accessTokenPayload: AccessTokenPayload = {username: user.username, email: user.email, userId: user.id}
 
-        console.log(accessTokenPayload)
-
         const result: AccessToken = await this.loginService.execute(accessTokenPayload);
 
         return result;

@@ -26,4 +26,12 @@ export class UserMetrics {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
+
+    constructor (userId: number) {
+        this.userId = userId;
+        this.totalPoints = 0;
+        this.gamesPlayed = 0;
+        this.perfectGuesses = 0;
+        this.highestStreak = 0;
+    }
 }

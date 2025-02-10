@@ -6,7 +6,7 @@ export class Game {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ name: 'population' })
+    @Column({ name: 'population', type: 'bigint' })
     population: number;
 
     @Column({ name: 'x1' })
@@ -20,9 +20,6 @@ export class Game {
 
     @Column({ name: 'y2' })
     y2: number;
-
-    @Column({ name: 'score', nullable: true, default: 0 })
-    score: number;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

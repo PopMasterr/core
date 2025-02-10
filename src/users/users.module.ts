@@ -13,6 +13,7 @@ import { UserMetricsRepositoryInterface } from "./repositories/user-metrics-repo
 import { UpdateUserMetricsService } from "./services/update-user-metrics.service";
 import { SaveUserService } from "./services/save-user.service";
 import { GetUserByEmailService } from "./services/get-user-by-email.service";
+import { UpdateUserMetricsHighestStreakService } from "./services/update-user-metrics-highest-streak.service";
 
 const repositoryProviders: Array<Provider> = [
     {
@@ -55,14 +56,29 @@ const serviceProviders: Array<Provider> = [
     },
     {
         provide: UserDiTokens.SaveUserService,
-        useFactory: (repository: UserRepositoryInterface) => new SaveUserService(repository),
-        inject: [UserDiTokens.UserRepositoryInterface]
+        useFactory: (
+            repository: UserRepositoryInterface,
+            userMetricsRepository: UserMetricsRepositoryInterface
+        ) => new SaveUserService(repository, userMetricsRepository),
+        inject: [
+            UserDiTokens.UserRepositoryInterface,
+            UserDiTokens.UserMetricsRepositoryInterface
+        ]
+    },
+    {
+        provide: UserDiTokens.UpdateUserMetricsHighestStreakService,
+        useFactory: (
+            UserMetricsRepository: UserMetricsRepositoryInterface
+        ) => new UpdateUserMetricsHighestStreakService(UserMetricsRepository),
+        inject: [
+            UserDiTokens.UserMetricsRepositoryInterface
+        ]
     }
 ];
 
 @Module({
     controllers: [UsersController],
     providers: [...repositoryProviders, ...serviceProviders],
-    exports: [UserDiTokens.UpdateUserMetricsService, UserDiTokens.SaveUserService, UserDiTokens.UserRepositoryInterface, UserDiTokens.GetUserByEmailService]
+    exports: [UserDiTokens.UpdateUserMetricsService, UserDiTokens.SaveUserService, UserDiTokens.UserRepositoryInterface, UserDiTokens.GetUserByEmailService, UserDiTokens.UpdateUserMetricsHighestStreakService]
 })
 export class UsersModule {}

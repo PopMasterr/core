@@ -13,6 +13,9 @@ export class ClassicGamesGame {
     @Column({ name: 'gameId' })
     gameId: number;
 
+    @Column({ name: 'score', nullable: true, default: 0 })
+    score: number;
+
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 

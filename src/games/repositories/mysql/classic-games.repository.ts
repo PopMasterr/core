@@ -10,8 +10,8 @@ export class ClassicGamesRepository implements ClassicGamesRepositoryInterface {
     async save(classicGame: ClassicGame): Promise<ClassicGame> {
         return await this.repository.save(classicGame);
     }
-    
-    async findByUserId(userId: number): Promise<ClassicGame> {
-        return await this.repository.findOneBy({ userId: userId })
+
+    async findLastByUserId(userId: number): Promise<ClassicGame> {
+        return await this.repository.findOne({where: { userId: userId }, order: { id: 'DESC' }})
     }
 }

@@ -9,16 +9,14 @@ export class StreakGame {
     @Column({ name: 'user_id' })
     userId: number;
 
-    @Index('idx_classic_games_on_game_id_1')
-    @Column({ name: 'game_id_1' })
-    gameId1: number;
+    @Column({ name: 'streak', nullable: true, default: 0 })
+    streak: number;
 
-    @Index('idx_classic_games_on_game_id_2')
-    @Column({ name: 'game_id_2' })
-    gameId2: number;
+    @Column({ name: 'is_lost', nullable: true, default: 0 })
+    isLost: Boolean;
 
     @CreateDateColumn({ name: 'created_at' })
-    createAt: Date;
+    createdAt: Date;
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;

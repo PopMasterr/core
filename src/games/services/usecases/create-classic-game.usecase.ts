@@ -1,5 +1,4 @@
 import { UseCase } from "src/common/usecase.common";
-import { Game } from "src/games/entities/game.entity";
 
 // hex architecture
 export type CreateClassicGamePort = {
