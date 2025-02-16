@@ -7,4 +7,4 @@ export type FindGameDTO = {
     y2: number;
 }
 
-export interface FindGameUseCase extends UseCase<number, FindGameDTO> {}
+export interface FindClassicGameCoordinatesUseCase extends UseCase<number, FindGameDTO> {}

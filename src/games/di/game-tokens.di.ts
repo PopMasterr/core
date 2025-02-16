@@ -17,4 +17,6 @@ export class GameDiTokens {
     public static readonly CreateStreakGameService: string = 'CreateStreakGameService';
     public static readonly GetStreakAnswerIsCorrectService: string = 'GetStreakAnswerIsCorrectService';
     public static readonly GetStreakGameCoordinatesService: string = 'GetStreakGameCoordinatesService';
+    public static readonly CreateStreakGamesDataService: string = 'CreateStreakGamesDataService';
+    public static readonly FindStreakGamesGamesService: string = 'FindStreakGamesGamesService';
 }

@@ -2,10 +2,9 @@ import { Game } from "../entities/game.entity";
 import { ClassicGamesGamesRepositoryInterface } from "../repositories/classic-games-games-repository.interface";
 import { ClassicGamesRepositoryInterface } from "../repositories/classic-games-repository.interface";
 import { GameRepositoryInterface } from "../repositories/games-repository.interface";
-import { FindGameDTO, FindGameUseCase } from "./usecases/find-game.usecase";
+import { FindGameDTO, FindClassicGameCoordinatesUseCase } from "./usecases/find-classic-game-coordinates.usecase";
 
-// TODO: Specify classic as this service is used to get classic games
-export class FindGameService implements FindGameUseCase {
+export class FindClassicGameCoordinatesService implements FindClassicGameCoordinatesUseCase {
     constructor(
         private readonly clasicGameRepository: ClassicGamesRepositoryInterface,
         private readonly classicGamesGamesRepository: ClassicGamesGamesRepositoryInterface,

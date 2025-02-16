@@ -10,9 +10,7 @@ import { CloudStorageProviderInterface } from "./gcp/interfaces/cloud-storage-pr
 import { SaveImageService } from "./services/save-image.service";
 import { ImagesController } from "./controllers/images.controller";
 import { DeleteImageService } from "./services/delete-image.service";
-import { SaveImageUseCase } from "./services/usecases/save-image.usecase";
 import { DeleteImageUseCase } from "./services/usecases/delete-image.usecase";
-import { UpdateImageService } from "./services/update-image.service";
 import { FindImageService } from "./services/find-image.service";
 
 const repositoryProviders: Array<Provider> = [
@@ -33,11 +31,13 @@ const serviceProviders: Array<Provider> = [
         provide: ImagesDiTokens.SaveImageService,
         useFactory: (
             imagesRepository: ImageRepositoryInterface,
-            cloudStorage: CloudStorageProviderInterface
-        ) => new SaveImageService(imagesRepository, cloudStorage),
+            cloudStorage: CloudStorageProviderInterface,
+            deleteImageService: DeleteImageUseCase
+        ) => new SaveImageService(imagesRepository, cloudStorage, deleteImageService),
         inject: [
             ImagesDiTokens.ImagesRepositoryInterface,
-            ImagesDiTokens.CloudStorageProvider
+            ImagesDiTokens.CloudStorageProvider,
+            ImagesDiTokens.DeleteImageService
         ]
     },
     {
@@ -50,17 +50,6 @@ const serviceProviders: Array<Provider> = [
             ImagesDiTokens.ImagesRepositoryInterface,
             ImagesDiTokens.CloudStorageProvider
         ]
-    },
-    {
-        provide: ImagesDiTokens.UpdateImageService,
-        useFactory: (
-            saveImageService: SaveImageUseCase,
-            deleteImageService: DeleteImageUseCase
-        ) => new UpdateImageService(saveImageService, deleteImageService),
-        inject: [
-            ImagesDiTokens.SaveImageService,
-            ImagesDiTokens.DeleteImageService
-        ] 
     },
     {
         provide: ImagesDiTokens.FindImageService,

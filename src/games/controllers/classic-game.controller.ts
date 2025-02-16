@@ -2,7 +2,7 @@ import { Controller, Request, Inject, Post, Param, Get, ParseIntPipe } from "@ne
 import { GameDiTokens } from "../di/game-tokens.di";
 import { CreateClassicGameUseCase } from "../services/usecases/create-classic-game.usecase";
 import { GetClassicGameScoreUseCase } from "../services/usecases/get-classic-game-score.usecase";
-import { FindGameUseCase } from "../services/usecases/find-game.usecase";
+import { FindClassicGameCoordinatesUseCase } from "../services/usecases/find-classic-game-coordinates.usecase";
 
 @Controller('classic_games')
 export class ClassicGamesController {
@@ -12,7 +12,7 @@ export class ClassicGamesController {
         @Inject(GameDiTokens.GetClassicGameScoreService)
         private readonly getClassicGameScoreService: GetClassicGameScoreUseCase,
         @Inject(GameDiTokens.FindGameService)
-        private readonly findGameService: FindGameUseCase
+        private readonly findGameService: FindClassicGameCoordinatesUseCase
     ) { }
 
     @Post('/create_classic_game')

@@ -1,6 +1,5 @@
 import { UseCase } from "src/common/usecase.common";
 
-// hex architecture
 export type CreateClassicGamePort = {
     userId: number;
 }

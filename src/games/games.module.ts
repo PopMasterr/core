@@ -20,7 +20,7 @@ import { ClassicGamesGamesRepositoryInterface } from "./repositories/classic-gam
 import { CreateGameUseCase } from "./services/usecases/create-game.usecase";
 import { GetClassicGameScoreSerivce } from "./services/get-classic-game-score.service";
 import { GetScoreUseCase } from "src/population/services/usecases/get-score.usecase";
-import { FindGameService } from "./services/find-game.service";
+import { FindClassicGameCoordinatesService } from "./services/find-classic-game-coordinates.service";
 import { StreakGamesRepository } from "./repositories/mysql/streak-games.repository";
 import { StreakGamesGame } from "./entities/streak-games-game.entity";
 import { StreakGamesGamesRepository } from "./repositories/mysql/streak-games-games.repository";
@@ -31,10 +31,13 @@ import { StreakGamesController } from "./controllers/streak-game.controller";
 import { StreakGame } from "./entities/streak-game.entity";
 import { GetStreakAnswerIsCorrectService } from "./services/get-streak-answer-is-correct.service";
 import { GetStreakGameCoordinatesService } from "./services/get-streak-game-coordinates.service";
-import { CreateStreakGameUseCase } from "./services/usecases/create-streak-game.usecase";
 import { UsersModule } from "src/users/users.module";
 import { UpdateUserMetricsHighestStreakUseCase } from "src/users/services/usecases/update-user-metrics-highest-streak.usecase";
 import { UserDiTokens } from "src/users/di/user-tokens.di";
+import { CreateStreakGamesDataUseCase } from "./services/usecases/create-streak-games-data.usecase";
+import { CreateStreakGamesDataService } from "./services/create-streak-games-data.service";
+import { FindStreakGamesGamesService } from "./services/find-streak-games-games.service";
+import { FindStreakGamesGamesUseCase } from "./services/usecases/find-streak-games-games.usecase";
 
 const repositoryProviders: Array<Provider> = [
     {
@@ -136,7 +139,7 @@ const serviceProviders: Array<Provider> = [
             classicGameRepositoy: ClassicGamesRepositoryInterface,
             classicGamesGameRepository: ClassicGamesGamesRepositoryInterface,
             gamesRepository: GameRepositoryInterface
-        ) => new FindGameService(classicGameRepositoy, classicGamesGameRepository, gamesRepository),
+        ) => new FindClassicGameCoordinatesService(classicGameRepositoy, classicGamesGameRepository, gamesRepository),
         inject: [
             GameDiTokens.ClassicGamesRepositoryInterface,
             GameDiTokens.ClassicGamesGameRepositoryInterface,
@@ -147,45 +150,55 @@ const serviceProviders: Array<Provider> = [
         provide: GameDiTokens.CreateStreakGameService,
         useFactory: (
             streakGameRepository: StreakGamesRepositoryInterface,
-            createGameService: CreateGameUseCase,
-            streakGamesGamesRepository: StreakGamesGamesRepositoryInterface
-        ) => new CreateStreakGameService(streakGameRepository, createGameService, streakGamesGamesRepository),
+            streakGamesGamesRepository: StreakGamesGamesRepositoryInterface,
+            createStreakGamesDataService: CreateStreakGamesDataUseCase
+        ) => new CreateStreakGameService(streakGameRepository, streakGamesGamesRepository, createStreakGamesDataService),
         inject: [
             GameDiTokens.StreakGamesRepositoryInterface,
-            GameDiTokens.CreateGameService,
-            GameDiTokens.StreakGamesGameRepositoryInterface
+            GameDiTokens.StreakGamesGameRepositoryInterface,
+            GameDiTokens.CreateStreakGamesDataService
         ]
     },
     {
         provide: GameDiTokens.GetStreakAnswerIsCorrectService,
         useFactory: (
             streakGameRepository: StreakGamesRepositoryInterface,
-            streakGamesGameRepository: StreakGamesGamesRepositoryInterface,
-            gamesRepository: GameRepositoryInterface,
-            createGameService: CreateGameUseCase,
-            createStreakGameService: CreateStreakGameUseCase,
-            updateUserMetricsHighestStreakService: UpdateUserMetricsHighestStreakUseCase
-        ) => new GetStreakAnswerIsCorrectService(streakGameRepository, streakGamesGameRepository, gamesRepository, createGameService, createStreakGameService, updateUserMetricsHighestStreakService),
+            updateUserMetricsHighestStreakService: UpdateUserMetricsHighestStreakUseCase,
+            createStreakGamesDataService: CreateStreakGamesDataUseCase,
+            findStreakGamesGamesService: FindStreakGamesGamesUseCase
+        ) => new GetStreakAnswerIsCorrectService(streakGameRepository, updateUserMetricsHighestStreakService, createStreakGamesDataService, findStreakGamesGamesService),
         inject: [
             GameDiTokens.StreakGamesRepositoryInterface,
-            GameDiTokens.StreakGamesGameRepositoryInterface,
-            GameDiTokens.GamesRepositoryInterface,
-            GameDiTokens.CreateGameService,
-            GameDiTokens.CreateStreakGameService,
-            UserDiTokens.UpdateUserMetricsHighestStreakService
+            UserDiTokens.UpdateUserMetricsHighestStreakService,
+            GameDiTokens.CreateStreakGamesDataService,
+            GameDiTokens.FindStreakGamesGamesService
         ]
     },
     {
         provide: GameDiTokens.GetStreakGameCoordinatesService,
         useFactory: (
+            findStreakGamesGamesService: FindStreakGamesGamesUseCase
+        ) => new GetStreakGameCoordinatesService(findStreakGamesGamesService),
+        inject: [
+            GameDiTokens.FindStreakGamesGamesService
+        ]
+    },
+    {
+        provide: GameDiTokens.CreateStreakGamesDataService,
+        useFactory: (createGameService: CreateGameUseCase) => new CreateStreakGamesDataService(createGameService),
+        inject: [GameDiTokens.CreateGameService]
+    },
+    {
+        provide: GameDiTokens.FindStreakGamesGamesService,
+        useFactory: (
             streakGamesRepository: StreakGamesRepositoryInterface,
-            streakGamesGameRepository: StreakGamesGamesRepositoryInterface,
+            streakGamesGamesRepository: StreakGamesGamesRepositoryInterface,
             gamesRepository: GameRepositoryInterface
-        ) => new GetStreakGameCoordinatesService(streakGamesRepository, streakGamesGameRepository, gamesRepository),
+        ) => new FindStreakGamesGamesService(streakGamesRepository, streakGamesGamesRepository, gamesRepository),
         inject: [
             GameDiTokens.StreakGamesRepositoryInterface,
             GameDiTokens.StreakGamesGameRepositoryInterface,
-            GameDiTokens.GamesRepositoryInterface,
+            GameDiTokens.GamesRepositoryInterface
         ]
     }
 ]

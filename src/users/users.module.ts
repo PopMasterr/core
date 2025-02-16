@@ -14,6 +14,16 @@ import { UpdateUserMetricsService } from "./services/update-user-metrics.service
 import { SaveUserService } from "./services/save-user.service";
 import { GetUserByEmailService } from "./services/get-user-by-email.service";
 import { UpdateUserMetricsHighestStreakService } from "./services/update-user-metrics-highest-streak.service";
+import { UserAchievement } from "./entities/user-achievements.entity";
+import { UserAchievementsRepository } from "./repositories/mysql/user-achievements.repository";
+import { AddUserAchievementsService } from "./services/add-user-achievements.service";
+import { UserAchievementsRepositoryInterface } from "./repositories/user-achievements-repository.interface";
+import { CheckViableAchievementsUseCase } from "src/achievements/services/usecases/check-viable-achievements.usecase";
+import { AchievementsModule } from "src/achievements/achievements.module";
+import { AchievementDiTokens } from "src/achievements/di/achievement-tokens.di";
+import { FindUserAchievementsService } from "./services/find-user-achievements.service";
+import { FindAchievementsUseCase } from "src/achievements/services/usecases/find-achievements.usecase";
+import { UserAchievmentsController } from "./controller/user-achievements.controller";
 
 const repositoryProviders: Array<Provider> = [
     {
@@ -35,6 +45,16 @@ const repositoryProviders: Array<Provider> = [
         provide: UserDiTokens.UserMetricsRepositoryInterface,
         useFactory: (repository: Repository<UserMetrics>) => new UserMetricsRepository(repository),
         inject: [UserDiTokens.MySQLUserMetricsRepositoryInterface]
+    },
+    {
+        provide: UserDiTokens.MySQLUserAchievementsRepositoryInterface,
+        useFactory: (dataSource: DataSource) => dataSource.getRepository(UserAchievement),
+        inject: [DatabaseDiTokens.MySQLDataSource],
+    },
+    {
+        provide: UserDiTokens.UserAchievementsRepositoryInterface,
+        useFactory: (repository: Repository<UserAchievement>) => new UserAchievementsRepository(repository),
+        inject: [UserDiTokens.MySQLUserAchievementsRepositoryInterface]
     },
 ];
 
@@ -73,12 +93,44 @@ const serviceProviders: Array<Provider> = [
         inject: [
             UserDiTokens.UserMetricsRepositoryInterface
         ]
+    },
+    {
+        provide: UserDiTokens.AddUserAchievementService,
+        useFactory: (
+            userAchievementRepository: UserAchievementsRepositoryInterface,
+            checkViableAchievementsService: CheckViableAchievementsUseCase,
+            userMetricsRepository: UserMetricsRepositoryInterface
+        ) => new AddUserAchievementsService(userAchievementRepository, checkViableAchievementsService, userMetricsRepository),
+        inject: [
+            UserDiTokens.UserAchievementsRepositoryInterface,
+            AchievementDiTokens.CheckViableAchievementsService,
+            UserDiTokens.UserMetricsRepositoryInterface
+        ]
+    },
+    {
+        provide: UserDiTokens.FindUserAchievementsService,
+        useFactory: (
+            userAchievementsRepository: UserAchievementsRepositoryInterface,
+            findAchievementsService: FindAchievementsUseCase
+        ) => new FindUserAchievementsService(userAchievementsRepository, findAchievementsService),
+        inject: [
+            UserDiTokens.UserAchievementsRepositoryInterface,
+            AchievementDiTokens.FindAchievementsService
+        ]
     }
 ];
 
 @Module({
-    controllers: [UsersController],
+    controllers: [UsersController, UserAchievmentsController],
     providers: [...repositoryProviders, ...serviceProviders],
-    exports: [UserDiTokens.UpdateUserMetricsService, UserDiTokens.SaveUserService, UserDiTokens.UserRepositoryInterface, UserDiTokens.GetUserByEmailService, UserDiTokens.UpdateUserMetricsHighestStreakService]
+    exports: [
+        UserDiTokens.UpdateUserMetricsService,
+        UserDiTokens.SaveUserService, 
+        UserDiTokens.UserRepositoryInterface, 
+        UserDiTokens.GetUserByEmailService, 
+        UserDiTokens.UpdateUserMetricsHighestStreakService,
+        UserDiTokens.AddUserAchievementService
+    ],
+    imports: [AchievementsModule]
 })
 export class UsersModule {}

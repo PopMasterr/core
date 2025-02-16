@@ -3,6 +3,7 @@ import { GameDiTokens } from "../di/game-tokens.di";
 import { CreateStreakGameUseCase } from "../services/usecases/create-streak-game.usecase";
 import { GetStreakAnswerIsCorrectUseCase } from "../services/usecases/get-streak-answer-is-correct.usecase";
 import { GetStreakGameCoordinatesUseCase } from "../services/usecases/get-streak-game-coordinates.usecase";
+import { TerritorySide } from "../entities/types/create-streak-games-game-payload.type";
 
 @Controller('streak_games')
 export class StreakGamesController {
@@ -27,11 +28,12 @@ export class StreakGamesController {
     @Get('/get_answer_is_correct/:choseBlue')
     async getAnswerIsCorrect(
         @Request() req,
-        @Param('choseBlue', ParseBoolPipe) choseBlue: Boolean
+        @Param('territorySide', ParseBoolPipe) choseBlue: Boolean
     ) {
         const userId = req.user.userId;
+        const chosenTerritorySide = choseBlue ? TerritorySide.BLUE : TerritorySide.RED;
 
-        return await this.getStreakAnswerIsCorrectService.execute({ userId: userId, choseBlue: choseBlue })
+        return await this.getStreakAnswerIsCorrectService.execute({ userId: userId, chosenTerritorySide: chosenTerritorySide });
     }
 
     @Get('/get_streak_game_coordinates')

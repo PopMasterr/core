@@ -10,6 +10,7 @@ import { ClassicGamesGame } from "src/games/entities/classic-games-game.entity";
 import { StreakGamesGame } from "src/games/entities/streak-games-game.entity";
 import { StreakGame } from "src/games/entities/streak-game.entity";
 import { Image } from "src/images/entities/image.entity"
+import { UserAchievement } from "src/users/entities/user-achievements.entity";
 
 export const databaseProviders: Array<Provider>  = [
     {
@@ -22,7 +23,7 @@ export const databaseProviders: Array<Provider>  = [
                 username: process.env.MYSQL_USER,
                 password: process.env.MYSQL_PASSWORD,
                 database: process.env.MYSQL_DB_NAME,
-                entities: [User, UserMetrics, Achievement, Game, ClassicGame, StreakGame, ClassicGamesGame, StreakGamesGame, Image],
+                entities: [User, UserMetrics, Achievement, Game, ClassicGame, StreakGame, ClassicGamesGame, StreakGamesGame, Image, UserAchievement],
                 synchronize: true,
                 logging: process.env.NODE_ENV === 'development',
             });

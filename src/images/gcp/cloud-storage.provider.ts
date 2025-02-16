@@ -3,8 +3,7 @@ import { parse } from "path";
 import { v4 as uuidv4 } from 'uuid';
 import { UploadedFileType } from "./types/file.type";
 import { BadRequestException } from "@nestjs/common";
-import { CloudStorageProviderInterface } from "./interfaces/cloud-storage-provider.interface";
-
+import { CloudStorageProviderInterface, UploadFileResult } from "./interfaces/cloud-storage-provider.interface";
 
 export class CloudStorage implements CloudStorageProviderInterface {
     private bucket: Bucket;
@@ -18,8 +17,7 @@ export class CloudStorage implements CloudStorageProviderInterface {
         this.bucket = storage.bucket('university_project_computer_organisation');
     }
     
-    // TODO: Define proper return type to inlcude publicUrl and fileName
-    async uploadFile(uploadedFile: UploadedFileType): Promise<any> {
+    async uploadFile(uploadedFile: UploadedFileType): Promise<UploadFileResult> {
         const fileName: string = this.setFileName(uploadedFile);
 
         const file = this.bucket.file(fileName);
@@ -29,7 +27,7 @@ export class CloudStorage implements CloudStorageProviderInterface {
         } catch (error) {
             throw new BadRequestException(error?.message);
         }
-        return { ...file.metadata, publicUrl: `https://storage.googleapis.com/${this.bucket.name}/${file.name}`, fileName: fileName };
+        return { publicUrl: `https://storage.googleapis.com/${this.bucket.name}/${file.name}`, fileName: fileName };
     }
 
     private setFileName(uploadedFile: UploadedFileType): string {
@@ -48,5 +46,4 @@ export class CloudStorage implements CloudStorageProviderInterface {
             throw new BadRequestException(error?.message);
         }
     }
-
 }

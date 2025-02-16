@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { User } from "../entities/user.entity";
 import { UserRepositoryInterface } from "../repositories/user-repository.interface";
 import { GetUserByEmailPort, GetUserByEmailUseCase } from "./usecases/get-user-by-email.usecase";

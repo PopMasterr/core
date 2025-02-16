@@ -5,7 +5,6 @@ export class ImagesDiTokens {
     public static readonly CloudStorageProvider: string = 'CloudStorageProvider';
 
     public static readonly SaveImageService: string = 'SaveImageService';
-    public static readonly UpdateImageService: string = 'UpdateImageService';
     public static readonly DeleteImageService: string = 'DeleteImageService';
     public static readonly FindImageService: string = 'FindImageService';
 }

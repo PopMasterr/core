@@ -7,6 +7,7 @@ import { UpdateUserMetricsUseCase } from "src/users/services/usecases/update-use
 import { UserDiTokens } from "src/users/di/user-tokens.di";
 import { GetGameDataService } from "./services/get-game-data.service";
 import { GetScoreService } from "./services/get-score.service";
+import { AddUserAchievementsUseCase } from "src/users/services/usecases/add-user-achievements.usecase";
 
 const repositoryProviders: Array<Provider> = [
     {
@@ -20,11 +21,13 @@ const serviceProviders: Array<Provider> = [
         provide: PopulationDITokens.GetScoreService,
         useFactory: (
             populationRepository: PopulationRepositoryInterface,
-            updateUserMetricsService: UpdateUserMetricsUseCase
-        ) => new GetScoreService(populationRepository, updateUserMetricsService),
+            updateUserMetricsService: UpdateUserMetricsUseCase,
+            addUserAchievementsService: AddUserAchievementsUseCase
+        ) => new GetScoreService(populationRepository, updateUserMetricsService, addUserAchievementsService),
         inject: [
             PopulationDITokens.PopulationRepositoryInterface,
             UserDiTokens.UpdateUserMetricsService,
+            UserDiTokens.AddUserAchievementService
         ]
     },
     {

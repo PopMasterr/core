@@ -1,9 +1,9 @@
 import { UseCase } from "src/common/usecase.common";
+import { TerritorySide } from "src/games/entities/types/create-streak-games-game-payload.type";
 
 export type GetStreakAnswerIsCorrectPort = {
     userId: number;
-    // TODO: Convert to type that was chosen
-    choseBlue: Boolean;
+    chosenTerritorySide: TerritorySide;
 }
 
 export type GetStreakAnswerIsCorrectDTO = {

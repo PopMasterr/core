@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { CreateStreakGamesGamePayload } from "./types/create-streak-games-game-payload.type";
+import { CreateStreakGamesGamePayload, TerritorySide } from "./types/create-streak-games-game-payload.type";
 
 @Entity('streak_games_games')
 export class StreakGamesGame {
@@ -13,9 +13,8 @@ export class StreakGamesGame {
     @Column({ name: 'gameId' })
     gameId: number;
 
-    // TODO: Would be better to transform into type e.g 1 = BLUE, 2 = RED would be more scalable and wouldn't expose external details as UI color
-    @Column({ name: 'is_blue' })
-    isBlue: Boolean;
+    @Column({ name: 'is_blue', type: 'enum', enum: TerritorySide })
+    territorySide: TerritorySide;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
@@ -26,6 +25,6 @@ export class StreakGamesGame {
     constructor (payload?: CreateStreakGamesGamePayload) {
         this.streakGameId = payload?.streakGameId;
         this.gameId = payload?.gameId;
-        this.isBlue = payload?.isBlue;
+        this.territorySide = payload?.territorySide;
     }
 }

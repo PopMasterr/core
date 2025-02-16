@@ -5,8 +5,6 @@ import { ApiConsumes } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
 import { ImagesDiTokens } from '../di/images-tokens.di';
 import { SaveImageDTO, SaveImageUseCase } from '../services/usecases/save-image.usecase';
-import { UploadedFileType } from '../gcp/types/file.type';
-import { UpdateImageUseCase } from '../services/usecases/update-image.usecase';
 import { DeleteImageUseCase } from '../services/usecases/delete-image.usecase';
 import { FindImageUseCase } from '../services/usecases/find-image.usecase';
 
@@ -15,8 +13,6 @@ export class ImagesController {
     constructor(
         @Inject(ImagesDiTokens.SaveImageService)
         private readonly saveImageService: SaveImageUseCase,
-        @Inject(ImagesDiTokens.UpdateImageService)
-        private readonly updateImageService: UpdateImageUseCase,
         @Inject(ImagesDiTokens.DeleteImageService)
         private readonly deleteImageService: DeleteImageUseCase,
         @Inject(ImagesDiTokens.FindImageService)
@@ -28,7 +24,7 @@ export class ImagesController {
     @UseInterceptors(
         FileInterceptor('image', {
             storage: memoryStorage(),
-            limits: { fileSize: 2097152 }, // 2MB
+            limits: { fileSize: 2097152 },
             fileFilter: (req, file, callback) => {
                 return file.mimetype.match(/image\/(jpg|jpeg|png|gif)$/)
                     ? callback(null, true)
@@ -47,42 +43,6 @@ export class ImagesController {
         }
 
         const image: SaveImageDTO = await this.saveImageService.execute({
-            userId: userId,
-            image: {
-                buffer: file.buffer,
-                originalName: file.originalname,
-                mimetype: file.mimetype,
-                fileName: file.filename,
-            }
-        });
-
-        return { image };
-    }
-
-    @Put('')
-    @ApiConsumes('multipart/form-data')
-    @UseInterceptors(
-        FileInterceptor('image', {
-            storage: memoryStorage(),
-            limits: { fileSize: 2097152 }, // 2MB
-            fileFilter: (req, file, callback) => {
-                return file.mimetype.match(/image\/(jpg|jpeg|png|gif)$/)
-                    ? callback(null, true)
-                    : callback(new BadRequestException('Only image files are allowed'), false);
-            }
-        })
-    )
-    async updateImage(
-        @UploadedFile() file: Express.Multer.File,
-        @Request() req
-    ) {
-        const userId = req.user.userId;
-
-        if (!file) {
-            throw new BadRequestException('File is required');
-        }
-
-        const image: SaveImageDTO = await this.updateImageService.execute({
             userId: userId,
             image: {
                 buffer: file.buffer,

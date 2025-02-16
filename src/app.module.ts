@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { GamesModule } from './games/games.module';
 import { ImagesModule } from './images/images.module';
+import { AchievementsModule } from './achievements/achievements.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { ImagesModule } from './images/images.module';
     UsersModule,
     AuthenticationModule,
     GamesModule,
-    ImagesModule
+    ImagesModule,
+    AchievementsModule
   ],
 })
 export class AppModule {}
