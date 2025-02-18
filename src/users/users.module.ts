@@ -129,7 +129,8 @@ const serviceProviders: Array<Provider> = [
         UserDiTokens.UserRepositoryInterface, 
         UserDiTokens.GetUserByEmailService, 
         UserDiTokens.UpdateUserMetricsHighestStreakService,
-        UserDiTokens.AddUserAchievementService
+        UserDiTokens.AddUserAchievementService,
+        UserDiTokens.GetUserService
     ],
     imports: [AchievementsModule]
 })

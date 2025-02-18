@@ -38,6 +38,20 @@ import { CreateStreakGamesDataUseCase } from "./services/usecases/create-streak-
 import { CreateStreakGamesDataService } from "./services/create-streak-games-data.service";
 import { FindStreakGamesGamesService } from "./services/find-streak-games-games.service";
 import { FindStreakGamesGamesUseCase } from "./services/usecases/find-streak-games-games.usecase";
+import { MultiplayerGame } from "./entities/multiplayer-game.entity";
+import { MultiplayerGamesRepository } from "./repositories/mysql/multiplayer-games.repository";
+import { MultiplayerGamesGame } from "./entities/multiplayer-games-game.entity";
+import { MultiplayerGamesGamesRepository } from "./repositories/mysql/multiplayer-games-games.repository";
+import { MultiplayerGamesGamesScore } from "./entities/multiplayer-games-games-score.entity";
+import { MultiplayerGamesGamesScoresRepository } from "./repositories/mysql/multiplayer-games-games-scores.repository";
+import { CreateMultiplayerGameService } from "./services/create-multiplayer-game.service";
+import { MultiplayerGamesGamesRepositoryInterface } from "./repositories/multiplayer-games-games-repository.interface";
+import { MultiplayerGamesRepositoryInterface } from "./repositories/multiplayer-games-repository.interface";
+import { GetMultiplayerGameCoordinatesService } from "./services/get-multiplayer-game-coordinates.service";
+import { GetMultiplayerGameScoreService } from "./services/get-multiplayer-game-score.service";
+import { MultiplayerGamesGamesScoresRepositoryInterface } from "./repositories/multiplayer-games-games-scores-repository.interface";
+import { MultiplayerGamesController } from "./controllers/multiplayer-game.controller";
+import { GetUserUseCase } from "src/users/services/usecases/get-user.usecase";
 
 const repositoryProviders: Array<Provider> = [
     {
@@ -89,7 +103,37 @@ const repositoryProviders: Array<Provider> = [
         provide: GameDiTokens.StreakGamesGameRepositoryInterface,
         useFactory: (repository: Repository<StreakGamesGame>) => new StreakGamesGamesRepository(repository),
         inject: [GameDiTokens.MySQLStreakGamesGameRepositoryInterface]
-    }
+    },
+    {
+        provide: GameDiTokens.MySQLMultiplayerGamesRepositoryInterface,
+        useFactory: (dataSource: DataSource) => dataSource.getRepository(MultiplayerGame),
+        inject: [DatabaseDiTokens.MySQLDataSource]
+    },
+    {
+        provide: GameDiTokens.MultiplayerGamesRepositoryInterface,
+        useFactory: (repository: Repository<MultiplayerGame>) => new MultiplayerGamesRepository(repository),
+        inject: [GameDiTokens.MySQLMultiplayerGamesRepositoryInterface]
+    },
+    {
+        provide: GameDiTokens.MySQLMultiplayerGamesGamesRepositoryInterface,
+        useFactory: (dataSource: DataSource) => dataSource.getRepository(MultiplayerGamesGame),
+        inject: [DatabaseDiTokens.MySQLDataSource]
+    },
+    {
+        provide: GameDiTokens.MultiplayerGamesGamesRerpositoryInterface,
+        useFactory: (repository: Repository<MultiplayerGamesGame>) => new MultiplayerGamesGamesRepository(repository),
+        inject: [GameDiTokens.MySQLMultiplayerGamesGamesRepositoryInterface]
+    },
+    {
+        provide: GameDiTokens.MySQLMultiplayerGamesGamesScoresRepositoryInterface,
+        useFactory: (dataSource: DataSource) => dataSource.getRepository(MultiplayerGamesGamesScore),
+        inject: [DatabaseDiTokens.MySQLDataSource]
+    },
+    {
+        provide: GameDiTokens.MultiplayerGamesGamesScoresRepositoryInterface,
+        useFactory: (repository: Repository<MultiplayerGamesGamesScore>) => new MultiplayerGamesGamesScoresRepository(repository),
+        inject: [GameDiTokens.MySQLMultiplayerGamesGamesScoresRepositoryInterface]
+    },
 ]
 
 const serviceProviders: Array<Provider> = [
@@ -200,11 +244,53 @@ const serviceProviders: Array<Provider> = [
             GameDiTokens.StreakGamesGameRepositoryInterface,
             GameDiTokens.GamesRepositoryInterface
         ]
+    },
+    {
+        provide: GameDiTokens.CreateMultiplayerGameService,
+        useFactory: (
+            multiplayerGamesRepository: MultiplayerGamesRepositoryInterface,
+            multiplayerGamesGamesRepository: MultiplayerGamesGamesRepositoryInterface,
+            createGameService: CreateGameUseCase
+        ) => new CreateMultiplayerGameService(multiplayerGamesRepository, multiplayerGamesGamesRepository, createGameService),
+        inject: [
+            GameDiTokens.MultiplayerGamesRepositoryInterface,
+            GameDiTokens.MultiplayerGamesGamesRerpositoryInterface,
+            GameDiTokens.CreateGameService
+        ]
+    },
+    {
+        provide: GameDiTokens.GetMultiplayerGameCoordinatesService,
+        useFactory: (
+            multiplayerGamesGamesRepository: MultiplayerGamesGamesRepositoryInterface,
+            gamesRepository: GameRepositoryInterface
+        ) => new GetMultiplayerGameCoordinatesService(multiplayerGamesGamesRepository, gamesRepository),
+        inject: [
+            GameDiTokens.MultiplayerGamesGamesRerpositoryInterface,
+            GameDiTokens.GamesRepositoryInterface
+        ]
+    },
+    {
+        provide: GameDiTokens.GetMultiplayerGameScoreService,
+        useFactory: (
+            multiplayerGamesGamesScoreRepository: MultiplayerGamesGamesScoresRepositoryInterface,
+            multiplayerGamesGamesRepository: MultiplayerGamesGamesRepositoryInterface,
+            getScoreService: GetScoreUseCase,
+            gamesRepository: GameRepositoryInterface,
+            getUserService: GetUserUseCase
+        ) => new GetMultiplayerGameScoreService(multiplayerGamesGamesScoreRepository, multiplayerGamesGamesRepository, getScoreService, gamesRepository, getUserService),
+        inject: [
+            GameDiTokens.MultiplayerGamesGamesScoresRepositoryInterface,
+            GameDiTokens.MultiplayerGamesGamesRerpositoryInterface,
+            PopulationDITokens.GetScoreService,
+            GameDiTokens.GamesRepositoryInterface,
+            UserDiTokens.GetUserService
+        ]
+        
     }
 ]
 
 @Module({
-    controllers: [ClassicGamesController, StreakGamesController],
+    controllers: [ClassicGamesController, StreakGamesController, MultiplayerGamesController],
     providers: [...repositoryProviders, ...serviceProviders],
     imports: [PopulationModule, UsersModule]
 })

@@ -9,6 +9,12 @@ export class GameDiTokens {
     public static readonly StreakGamesRepositoryInterface: string = 'StreakGamesRepositoryInterface';
     public static readonly MySQLStreakGamesGameRepositoryInterface: string = 'MySQLStreakGamesGameRepositoryInterface';
     public static readonly StreakGamesGameRepositoryInterface: string = 'StreakGamesGameRepositoryInterface';
+    public static readonly MySQLMultiplayerGamesRepositoryInterface: string = 'MySQLMultiplayerGamesRepositoryInterface';
+    public static readonly MultiplayerGamesRepositoryInterface: string = 'MultiplayerGamesRerpositoryInterface';
+    public static readonly MySQLMultiplayerGamesGamesRepositoryInterface: string = 'MySQLMultiplayerGamesGamesRepositoryInterface';
+    public static readonly MultiplayerGamesGamesRerpositoryInterface: string = 'MultiplayerGamesGamesRerpositoryInterface';
+    public static readonly MySQLMultiplayerGamesGamesScoresRepositoryInterface: string = 'MySQLMultiplayerGamesGamesScoresRepositoryInterface';
+    public static readonly MultiplayerGamesGamesScoresRepositoryInterface: string = 'MultiplayerGamesGamesScoresRerpositoryInterface';
 
     public static readonly CreateClassicGameService: string = 'CreateClassicGameService';
     public static readonly CreateGameService: string = 'CreateGameService';
@@ -19,4 +25,7 @@ export class GameDiTokens {
     public static readonly GetStreakGameCoordinatesService: string = 'GetStreakGameCoordinatesService';
     public static readonly CreateStreakGamesDataService: string = 'CreateStreakGamesDataService';
     public static readonly FindStreakGamesGamesService: string = 'FindStreakGamesGamesService';
+    public static readonly CreateMultiplayerGameService: string = 'CreateMultiplayerGamesService';
+    public static readonly GetMultiplayerGameCoordinatesService: string = 'GetMultiplayerGameCoordinatesService';
+    public static readonly GetMultiplayerGameScoreService: string = 'GetMultiplayerGameScoreService';
 }
