@@ -22,7 +22,7 @@ export class GetMultiplayerGameScoreService implements GetMultiplayerGameScoreUs
     async execute(payload?: GetMultiplayerGameScorePort): Promise<GetMultiplayerGameScoreDTO> {
         const { uniqueString, round, userId, populationGuess } = payload;
 
-        const multiplayerGamesGame: MultiplayerGamesGame = await this.multiplayerGamesGamesRepository.findByUniqueStringAndRound(uniqueString, round);
+        const multiplayerGamesGame: MultiplayerGamesGame = await this.multiplayerGamesGamesRepository.findByUniqueStringAndRound(uniqueString, round-1);
         if (!multiplayerGamesGame) return;
         const game: Game = await this.gamesRepository.findById(multiplayerGamesGame.gameId);
         if (!game) return;
@@ -35,13 +35,13 @@ export class GetMultiplayerGameScoreService implements GetMultiplayerGameScoreUs
         multiplayerGamesGamesScore.userId = userId;
 
         await this.multiplayerGamesGamesScoresRepository.save(multiplayerGamesGamesScore);
-        let allScores: SumsOfScores[] = await this.multiplayerGamesGamesScoresRepository.findAllSumsOfScoresByUniqueStringUpToRound(uniqueString, round);
+        let allScores: SumsOfScores[] = await this.multiplayerGamesGamesScoresRepository.findAllSumsOfScoresByUniqueStringUpToRound(uniqueString, round-1);
 
         const usernameAndScores: UsernameAndScore[] = await Promise.all(
-            allScores.map(async (score) => {
-                const user = await this.getUserService.execute({ id: score.userId });
+            allScores.map(async (userScore) => {
+                const user = await this.getUserService.execute({ id: userScore.userId });
                 if (!user) throw new NotFoundException();
-                return {username: user.username, score: score.totalScore};
+                return {username: user.username, score: userScore.totalScore};
             })
         );
 

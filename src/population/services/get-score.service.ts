@@ -13,8 +13,9 @@ export class GetScoreService implements GetScoreUseCase {
 
     async execute(payload?: GetScorePort): Promise<PopulationResponse> {
         const { populationGuess, population, userId } = payload;
-        const scoreAndPopuolation: PopulationResponse = await this.populationRepository.getScore(populationGuess, population);
-
+        let scoreAndPopuolation: PopulationResponse = await this.populationRepository.getScore(populationGuess, population);
+        scoreAndPopuolation.population = population;
+        
         await this.updateUserMetricsService.execute({ userId: userId, score: scoreAndPopuolation.score });
         await this.addUserAchievementsService.execute({ userId: userId, score: scoreAndPopuolation.score })
 

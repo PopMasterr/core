@@ -1,7 +1,7 @@
 import { Engine } from "json-rules-engine";
 import { AchievementRepositoryInterface } from "../../repositories/achievement-repository.interface";
 import { Achievement } from "../../entities/achievement.entity";
-import { FactsForRulesEngine, rulesEngineInterface } from "../rules-engine.interface";
+import { FactsForRulesEngine, rulesEngineInterface as RulesEngineInterface } from "../rules-engine.interface";
 
 export interface Rule {
     conditions: {
@@ -28,7 +28,7 @@ export type rulesEngineRunResult = {
     };
 }
 
-export class RulesEngine implements rulesEngineInterface {
+export class RulesEngine implements RulesEngineInterface {
     private engine: Engine = new Engine();
 
     private firstGuessRule: Rule = {

@@ -10,7 +10,7 @@ export class GetStreakAnswerIsCorrectService implements GetStreakAnswerIsCorrect
         private readonly streakGameRepository: StreakGamesRepositoryInterface,
         private readonly updateUserMetricsHighestStreakService: UpdateUserMetricsHighestStreakUseCase,
         private readonly createStreakGamesDataService: CreateStreakGamesDataUseCase,
-        private readonly findStreakGamesGamesService: FindStreakGamesGamesUseCase
+        private readonly findStreakGamesGamesService: FindStreakGamesGamesUseCase,
     ) { }
 
     async execute(payload?: GetStreakAnswerIsCorrectPort): Promise<GetStreakAnswerIsCorrectDTO> {

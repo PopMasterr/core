@@ -1,10 +1,14 @@
-import { Controller, Get, Inject, Param, ParseBoolPipe, Post, Request } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Inject, Param, ParseBoolPipe, Post, Query, Request } from "@nestjs/common";
 import { GameDiTokens } from "../di/game-tokens.di";
 import { CreateStreakGameUseCase } from "../services/usecases/create-streak-game.usecase";
 import { GetStreakAnswerIsCorrectUseCase } from "../services/usecases/get-streak-answer-is-correct.usecase";
 import { GetStreakGameCoordinatesUseCase } from "../services/usecases/get-streak-game-coordinates.usecase";
 import { TerritorySide } from "../entities/types/create-streak-games-game-payload.type";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { GetStreakAnswerIsCorrectResponseDto } from "./dtos/get-streak-answer-is-correct-response.dto";
+import { GetStreakGameCoordinatesResponseDto } from "./dtos/get-streak-game-coordinates-response.dto";
 
+@ApiTags('Streak games')
 @Controller('streak_games')
 export class StreakGamesController {
     constructor(
@@ -16,7 +20,8 @@ export class StreakGamesController {
         private readonly getStreakGameCoordinatesService: GetStreakGameCoordinatesUseCase
     ) { }
 
-    @Post('/create_streak_game')
+    @ApiResponse({ status: HttpStatus.OK, type: null })
+    @Post('/')
     async createStreakGame(
         @Request() req
     ) {
@@ -25,18 +30,20 @@ export class StreakGamesController {
         return await this.createStreakGameService.execute({ userId: userId });
     }
 
-    @Get('/get_answer_is_correct/:choseBlue')
+    @ApiResponse({ status: HttpStatus.OK, type: GetStreakAnswerIsCorrectResponseDto })
+    @Get('/check_answer')
     async getAnswerIsCorrect(
         @Request() req,
-        @Param('territorySide', ParseBoolPipe) choseBlue: Boolean
+        @Query('territorySide', ParseBoolPipe) territorySide: Boolean
     ) {
         const userId = req.user.userId;
-        const chosenTerritorySide = choseBlue ? TerritorySide.BLUE : TerritorySide.RED;
+        const chosenTerritorySide = territorySide ? TerritorySide.BLUE : TerritorySide.RED;
 
         return await this.getStreakAnswerIsCorrectService.execute({ userId: userId, chosenTerritorySide: chosenTerritorySide });
     }
 
-    @Get('/get_streak_game_coordinates')
+    @ApiResponse({ status: HttpStatus.OK, type: GetStreakGameCoordinatesResponseDto })
+    @Get('/get_coordinates')
     async getStreakGameCoordinates(
         @Request() req
     ) {

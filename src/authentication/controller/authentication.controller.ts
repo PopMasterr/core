@@ -1,8 +1,7 @@
-import { BadRequestException, Body, Request, Controller, Inject, Post, UseGuards, Get } from "@nestjs/common";
+import { BadRequestException, Body, Request, Controller, Inject, Post, UseGuards, Get, HttpStatus } from "@nestjs/common";
 import { AuthDITokens } from "../di/auth-tokens.di";
 import { LoginUseCase } from "../services/usecases/login.usecase";
 import { RegisterUseCase } from "../services/usecases/register.usecase";
-import { AuthGuard } from "@nestjs/passport";
 import { AccessToken } from "../types/access-token.types";
 import { AccessTokenPayload } from "../types/access-token-payload.types";
 import { User } from "src/users/entities/user.entity";
@@ -11,7 +10,11 @@ import { GetUserByEmailUseCase } from "src/users/services/usecases/get-user-by-e
 import { SaveUserUseCase } from "src/users/services/usecases/save-user.usecase";
 import { LocalAuthGuard } from "../guards/local-auth.guard";
 import { Public } from "../metadata/public.meta";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { LoginResponseDto } from "./dtos/login-response.dto";
+import { RegisterResponseDto } from "./dtos/register-response.dto";
 
+@ApiTags('Authentication')
 @Controller("authentication")
 export class AuthenticationController {
     constructor(
@@ -25,6 +28,7 @@ export class AuthenticationController {
         private readonly saveUserService: SaveUserUseCase
     ) { }
 
+    @ApiResponse({ status: HttpStatus.OK, type: LoginResponseDto })
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post("/login")
@@ -39,6 +43,7 @@ export class AuthenticationController {
         return result;
     }
 
+    @ApiResponse({ status: HttpStatus.OK, type: RegisterResponseDto })
     @Public()
     @Post("/register")
     async register(
@@ -51,10 +56,5 @@ export class AuthenticationController {
         await this.saveUserService.execute(newUser);
 
         return newUser;
-    }
-
-    @Get()
-    async something () {
-        return "wtf";
     }
 }

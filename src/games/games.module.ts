@@ -194,12 +194,10 @@ const serviceProviders: Array<Provider> = [
         provide: GameDiTokens.CreateStreakGameService,
         useFactory: (
             streakGameRepository: StreakGamesRepositoryInterface,
-            streakGamesGamesRepository: StreakGamesGamesRepositoryInterface,
             createStreakGamesDataService: CreateStreakGamesDataUseCase
-        ) => new CreateStreakGameService(streakGameRepository, streakGamesGamesRepository, createStreakGamesDataService),
+        ) => new CreateStreakGameService(streakGameRepository, createStreakGamesDataService),
         inject: [
             GameDiTokens.StreakGamesRepositoryInterface,
-            GameDiTokens.StreakGamesGameRepositoryInterface,
             GameDiTokens.CreateStreakGamesDataService
         ]
     },
@@ -209,7 +207,7 @@ const serviceProviders: Array<Provider> = [
             streakGameRepository: StreakGamesRepositoryInterface,
             updateUserMetricsHighestStreakService: UpdateUserMetricsHighestStreakUseCase,
             createStreakGamesDataService: CreateStreakGamesDataUseCase,
-            findStreakGamesGamesService: FindStreakGamesGamesUseCase
+            findStreakGamesGamesService: FindStreakGamesGamesUseCase,
         ) => new GetStreakAnswerIsCorrectService(streakGameRepository, updateUserMetricsHighestStreakService, createStreakGamesDataService, findStreakGamesGamesService),
         inject: [
             GameDiTokens.StreakGamesRepositoryInterface,
@@ -229,8 +227,14 @@ const serviceProviders: Array<Provider> = [
     },
     {
         provide: GameDiTokens.CreateStreakGamesDataService,
-        useFactory: (createGameService: CreateGameUseCase) => new CreateStreakGamesDataService(createGameService),
-        inject: [GameDiTokens.CreateGameService]
+        useFactory: (
+            createGameService: CreateGameUseCase,
+            streakGamesGamesRepository: StreakGamesGamesRepositoryInterface
+        ) => new CreateStreakGamesDataService(createGameService, streakGamesGamesRepository),
+        inject: [
+            GameDiTokens.CreateGameService,
+            GameDiTokens.StreakGamesGameRepositoryInterface
+        ]
     },
     {
         provide: GameDiTokens.FindStreakGamesGamesService,

@@ -1,6 +1,4 @@
 import { StreakGame } from "../entities/streak-game.entity";
-import { StreakGamesGame } from "../entities/streak-games-game.entity";
-import { StreakGamesGamesRepositoryInterface } from "../repositories/streak-games-games-repository.interface";
 import { StreakGamesRepositoryInterface } from "../repositories/streak-games-repository.interface";
 import { CreateStreakGamePort, CreateStreakGameUseCase } from "./usecases/create-streak-game.usecase";
 import { CreateStreakGamesDataUseCase } from "./usecases/create-streak-games-data.usecase";
@@ -8,8 +6,7 @@ import { CreateStreakGamesDataUseCase } from "./usecases/create-streak-games-dat
 export class CreateStreakGameService implements CreateStreakGameUseCase {
     constructor(
         private readonly streakGameRepository: StreakGamesRepositoryInterface,
-        private readonly streakGamesGamesRepository: StreakGamesGamesRepositoryInterface,
-        private readonly craeteStreakGamesDataService: CreateStreakGamesDataUseCase
+        private readonly createStreakGamesDataService: CreateStreakGamesDataUseCase
     ) { }
 
     async execute(payload?: CreateStreakGamePort): Promise<void> {
@@ -19,7 +16,6 @@ export class CreateStreakGameService implements CreateStreakGameUseCase {
         streakGame.userId = userId;
         streakGame = await this.streakGameRepository.save(streakGame);
 
-        const streakGamesGames: Array<StreakGamesGame> = await this.craeteStreakGamesDataService.execute({ streakGameId: streakGame.id });
-        await this.streakGamesGamesRepository.save(streakGamesGames);
+        await this.createStreakGamesDataService.execute({ streakGameId: streakGame.id });
     }
 }

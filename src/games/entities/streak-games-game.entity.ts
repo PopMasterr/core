@@ -10,10 +10,10 @@ export class StreakGamesGame {
     @Column({ name: 'streak_game_id' })
     streakGameId: number;
 
-    @Column({ name: 'gameId' })
+    @Column({ name: 'game_id' })
     gameId: number;
 
-    @Column({ name: 'is_blue', type: 'enum', enum: TerritorySide })
+    @Column({ name: 'territory_side', type: 'enum', enum: TerritorySide })
     territorySide: TerritorySide;
 
     @CreateDateColumn({ name: 'created_at' })

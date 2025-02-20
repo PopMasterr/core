@@ -1,13 +1,17 @@
-import { Controller, Post, UploadedFile, UseInterceptors, Request, Inject, Delete, Put, Get } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, Request, Inject, Delete, Put, Get, HttpStatus, NotFoundException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
-import { ApiConsumes } from '@nestjs/swagger';
+import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
 import { ImagesDiTokens } from '../di/images-tokens.di';
 import { SaveImageDTO, SaveImageUseCase } from '../services/usecases/save-image.usecase';
 import { DeleteImageUseCase } from '../services/usecases/delete-image.usecase';
 import { FindImageUseCase } from '../services/usecases/find-image.usecase';
+import { UploadImageResponseDto } from './dtos/upload-image-response.dto';
+import { Image } from '../entities/image.entity';
+import { FindImageResponseDto } from './dtos/find-image-response.dto';
 
+@ApiTags('Images')
 @Controller('images')
 export class ImagesController {
     constructor(
@@ -19,6 +23,7 @@ export class ImagesController {
         private readonly findImageService: FindImageUseCase
     ) { }
 
+    @ApiResponse({ status: HttpStatus.OK, type: UploadImageResponseDto })
     @Post('')
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(
@@ -55,6 +60,7 @@ export class ImagesController {
         return { image };
     }
 
+    @ApiResponse({ status: HttpStatus.OK, type: null })
     @Delete('')
     async deleteImage(
         @Request() req
@@ -65,12 +71,16 @@ export class ImagesController {
         return { message: 'successfully deleted image' };
     }
 
+    @ApiResponse({ status: HttpStatus.OK, type: FindImageResponseDto })
     @Get('')
     async findImage(
         @Request() req
     ) {
         const userId: number = req.user.userId;
 
-        return { publicUrl: (await this.findImageService.execute({ userId: userId })).url };
+        const image: Image = await this.findImageService.execute({ userId: userId });
+        if (!image) throw new NotFoundException();
+
+        return { publicUrl: image.url };
     }
 }

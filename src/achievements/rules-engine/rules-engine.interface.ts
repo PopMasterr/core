@@ -1,5 +1,3 @@
-import { UserMetrics } from "src/users/entities/user-metrics.entity";
-
 export type FactsForRulesEngine = {
     gamesPlayed: number;
     perfectGuesses: number;

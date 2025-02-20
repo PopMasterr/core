@@ -14,7 +14,6 @@ export class FindClassicGameCoordinatesService implements FindClassicGameCoordin
     async execute(payload?: number): Promise<FindGameDTO> {
         const userId = payload;
 
-        // TODO: Read on how to do joins with typeorm
         const classicGameId: number = (await this.clasicGameRepository.findLastByUserId(userId)).id;
         const gameId: number = (await this.classicGamesGamesRepository.findLastByClassicGameId(classicGameId)).gameId;
         const game: Game = await this.gameRepository.findById(gameId);

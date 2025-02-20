@@ -10,6 +10,6 @@ export class AchievementRepository implements AchievementRepositoryInterface {
     }
 
     async findById(id: number): Promise<Achievement> {
-        return await this.repository.findOne({ where: {id: id} })
+        return await this.repository.findOne({ where: { id: id } })
     }
 }

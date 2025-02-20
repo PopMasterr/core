@@ -1,9 +1,14 @@
-import { Body, Controller, Get, Inject, Param, ParseIntPipe, Post, Request } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Inject, Param, ParseIntPipe, Post, Query, Request } from "@nestjs/common";
 import { GameDiTokens } from "../di/game-tokens.di";
 import { CreateMultiplayerGamePort, CreateMultiplayerGameUseCase } from "../services/usecases/create-multiplayer-game.usecase";
 import { GetMultiplayerGameCoordinatesUseCase } from "../services/usecases/get-multiplayer-game-coordinates.usecase";
 import { GetMultiplayerGameScorePort, GetMultiplayerGameScoreUseCase } from "../services/usecases/get-multiplayer-game-score.usecase";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { CreateMultiplayerGameResponseDto } from "./dtos/create-multiplayer-game-response.dto";
+import { GetMultiplayerGameCoordinatesResponseDto } from "./dtos/get-multiplayer-game-coordinates-response.dto";
+import { GetMultiplayerGameScoreResponseDto } from "./dtos/get-multiplayer-game-score-response.dto";
 
+@ApiTags('Multiplayer games')
 @Controller('multiplayer_games')
 export class MultiplayerGamesController {
     constructor(
@@ -15,32 +20,32 @@ export class MultiplayerGamesController {
         private readonly getMultiplayerGameScore: GetMultiplayerGameScoreUseCase
     ) { }
 
+    @ApiResponse({ status: HttpStatus.OK, type: CreateMultiplayerGameResponseDto })
     @Post()
     async createMultiplayerGame(
-        @Request() req,
         @Body() payload: CreateMultiplayerGamePort
     ) {
         return await this.createMultiplayerGameService.execute(payload)
     }
 
-    @Get('/get_coordinates/:uniqueString')
+    @ApiResponse({ status: HttpStatus.OK, type: GetMultiplayerGameCoordinatesResponseDto })
+    @Get('/:uniqueString/get_coordinates')
     async getCoordinates(
         @Param('uniqueString') uniqueString: string
     ) { 
         return await this.getMultiplayerGameCoordinatesService.execute({uniqueString: uniqueString});
     }
 
-    @Get('/get_score/:uniqueString/:populationGuess/:round')
+    @ApiResponse({ status: HttpStatus.OK, type: GetMultiplayerGameScoreResponseDto })
+    @Get('/:uniqueString/get_score')
     async getScore(
         @Request() req,
         @Param('uniqueString') uniqueString: string,
-        @Param('populationGuess', ParseIntPipe) populationGuess: number,
-        @Param('round', ParseIntPipe) round: number
-
+        @Query('populationGuess', ParseIntPipe) populationGuess: number,
+        @Query('round', ParseIntPipe) round: number
     ) {
-        round -= 1
-
         const userId = req.user.userId;
+
 
         const payload: GetMultiplayerGameScorePort = {
             populationGuess,
