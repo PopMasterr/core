@@ -1,6 +1,6 @@
 ## Description
 
-PopMasterr is a multiplayer trivia game where players compete to guess the population contained in various rectangeles showcased on a map. The game includes different modes such as streak games, classic games and multiplayer games. The population of the rectangle is foudn with prefix sums in another api.
+PopMasterr is a multiplayer trivia game where players compete to guess the population contained in various rectangeles showcased on a map. The game includes different modes such as streak games, classic games and multiplayer games. The population of the rectangle is found with prefix sums in another api.
 
 Features:
 - Classic Game: guess the population of a rectangle drawn on the map
@@ -8,6 +8,7 @@ Features:
 - Multiplayer Game: guess the population in the rectangles and do it for multpile rounds. Moreover, you can see the scores of those who played before you
 - Achievements: get achievements for playing
 - Authentication: To play the game you have to create an account
+- Images: upload/delete profile image
 
 ## Project setup
 
@@ -32,7 +33,7 @@ Swagger API documentation will be available at http://localhost:3000/api.
 ![alt text](image.png)
 ![alt text](image-1.png)
 
-## Teck stack
+## Tech stack
 
 - Language: TypeScript
 - Backend Framework: NestJS - A Node.js framework for building efficient, reliable, and scalable server-side applications.
